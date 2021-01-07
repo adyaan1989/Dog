@@ -12,12 +12,9 @@ from keras.applications.inception_resnet_v2 import InceptionResNetV2, preprocess
 
 import gc
 import pandas as pd
-
-####################################################################################################################################
 from keras.layers import Lambda, Input, GlobalAveragePooling2D,BatchNormalization
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, Dense, Flatten, Dropout, GlobalMaxPooling2D, MaxPooling2D, BatchNormalization    
-#################################################################################################################################### 
 
 img_size = (331,331,3)
 
@@ -26,7 +23,6 @@ st.set_option('deprecation.showfileUploaderEncoding', False)
 labels = pd.read_csv('dog_breeds.csv')
 classes = sorted(list(set(labels['breed'])))
 
-##################################################################################################
 #Image processing function one
 @st.cache
 def image_processing(image_data, img_size=(331, 331, 3)):
@@ -35,7 +31,7 @@ def image_processing(image_data, img_size=(331, 331, 3)):
     image = np.array(image.convert('RGB'))
     image_reshape = np.expand_dims(image, axis=0)
     return image_reshape
-# ###################################################################################################################################
+
 def get_features(model_name, model_preprocessor, input_size, data):
        
     input_layer = Input(input_size)
@@ -53,10 +49,7 @@ def get_features(model_name, model_preprocessor, input_size, data):
     print('Feature maps shape: ', feature_maps.shape)
     return feature_maps
 
-
-#############################################################################################################################################
 model = tf.keras.models.load_model('model_final.hdf5')    
-#####################################################################################################################################
 
 def main():
     #st.write("Dog Breeds Prediction")
@@ -112,9 +105,6 @@ def main():
             img = cv2.cvtColor(new_img,1)
             output = cv2.GaussianBlur(img,(11,11), blur_rate)            
             st.image(output)
-        #############################################################################
-        # task =['Detection']
-        # feature = st.sidebar.selectbox('Detection',task)     
         
         if st.button('Deduction'):
             # Extract features using InceptionV3 
@@ -122,9 +112,7 @@ def main():
             inception_preprocessor = preprocess_input
             inception_features = get_features(InceptionV3, inception_preprocessor, img_size, X)
             st.text('Processing the image........................')
-            # st.image(X)
-            # st.write( X)                                   
-            # ##########################################################################################################################
+
             ##Extract features using Xception 
             xception_preprocessor = preprocess_input
             xception_feature = get_features(Xception,
@@ -132,7 +120,7 @@ def main():
                                             img_size, X)
             
             st.text("It's almost completing..................................")
-            # # ##########################################################################################################################
+            
             # # Extract features using InceptionResNetV2 
         
             inc_resnet_preprocessor = preprocess_input
@@ -141,7 +129,7 @@ def main():
                                                 img_size, X)
 
             st.text('Moving on last steps..................................')
-        ###########################################################################################################################
+        
         #Extract test data features.
         def extact_features(data):
             
@@ -160,13 +148,11 @@ def main():
             del inc_resnet_features
             gc.collect()
             return final_features
-    # # ##################################################################################################################################
+        
         test_features = extact_features(X)
         st.info('Completed ..........Sorry for delay')
-        #st.Image(X)
         pred = model.predict(test_features)
-        #################################################################################################################        
-        # # #############################################################################################################################
+        
         st.write(f"Predicted Breed: {classes[np.argmax(pred[0])]}")
         st.write(f"Probability of prediction): {round(np.max(pred[0])) * 100} %")
 
