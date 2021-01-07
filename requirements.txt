@@ -6,4 +6,4 @@ opencv-python==4.2.0.32
 pandas>=0.19
 tensorflow==2.4.0
 Keras==2.4.3
-gc==3.4
+
